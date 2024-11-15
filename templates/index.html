@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Web App</title>
+</head>
+<body>
+    <h1>Simple Form</h1>
+    <form method="POST">
+        <label for="field1">Weight:</label>
+        <input type="text" name="field1" id="field1"><br><br>
+        <label for="field2">Method:</label>
+        <input type="text" name="field2" id="field2"><br><br>
+        <label for="field3">Size:</label>
+        <input type="text" name="field3" id="field3"><br><br>
+        <label for="field4">Details:</label>
+        <input type="text" name="field4" id="field4"><br><br>
+        <button type="submit">Submit</button>
+    </form>
+    {% if result %}
+        <h2>Results:</h2>
+        <p>{{ result }}</p>
+    {% endif %}
+</body>
+</html>
