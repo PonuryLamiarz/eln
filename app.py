@@ -1,7 +1,16 @@
 from flask import Flask, render_template, request
+from azure.storage.blob import BlobServiceClient
 import os
 
 app = Flask(__name__)
+
+# Replace with your Azure Storage connection string and container name
+AZURE_CONNECTION_STRING = "your_connection_string_here"
+CONTAINER_NAME = "data-files"
+
+# Initialize the Blob Service Client
+blob_service_client = BlobServiceClient.from_connection_string(AZURE_CONNECTION_STRING)
+container_client = blob_service_client.get_container_client(CONTAINER_NAME)
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -13,11 +22,27 @@ def index():
         field4 = request.form.get("field4")
         
         # Format the data to save
-        result = f"Field 1: {field1}, Field 2: {field2}, Field 3: {field3}, Field 4: {field4}"
+        result = f"Field 1: {field1}, Field 2: {field2}, Field 3: {field3}, Field 4: {field4}\n"
         
-        # Save data to a file
-        with open("data.txt", "a") as file:
-            file.write(result + "\n")  # Append each entry on a new line
+        # Define blob name for storing the data
+        blob_name = "data.txt"
+
+        # Upload the data to the blob
+        try:
+            # Get a reference to the blob
+            blob_client = container_client.get_blob_client(blob_name)
+            
+            # Check if blob already exists to append data
+            if blob_client.exists():
+                # Download the current content to append to it
+                current_data = blob_client.download_blob().readall().decode()
+                result = current_data + result
+            
+            # Upload the updated content back to the blob
+            blob_client.upload_blob(result, overwrite=True)
+            print(f"Data saved to blob: {blob_name}")
+        except Exception as e:
+            print(f"Error saving to blob: {e}")
 
     return render_template("index.html", result=result)
 
