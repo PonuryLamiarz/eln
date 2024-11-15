@@ -5,7 +5,7 @@ import os
 app = Flask(__name__)
 
 # Replace with your Azure Storage connection string and container name
-AZURE_CONNECTION_STRING = "your_connection_string_here"
+AZURE_CONNECTION_STRING = os.getenv("AZURE_CONNECTION_STRING")
 CONTAINER_NAME = "data-files"
 
 # Initialize the Blob Service Client
